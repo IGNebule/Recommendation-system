@@ -1,25 +1,31 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
-const users = require("./user");
+const User = require('../../models/user')
 
 const register = async (req, res) => {
   const { email, password } = req.body;
-  const hashed = await bcrypt.hash(password, 10);
+  const existing = await User.findOne({ email })
 
-  users.push({
+  if (existing) {
+    return res.status(400).json({
+      Error: 'User already exists!'
+    })
+  }
+
+  const hashed = await bcrypt.hash(password, 10);
+  const user = await User.create({
     email,
-    password: hashed,
-    preferences: [],
-  });
+    password: hashed
+  })
 
   res.json({
-    Message: "User Registered",
+    Message: "User Registered", user
   });
 };
 
 const login = async (req, res) => {
   const { email, password } = req.body;
-  const user = users.find((u) => u.email === email);
+  const user = await User.findOne({ email })
 
   if (!user) {
     return res.status(400).json({ Error: "User not found" });

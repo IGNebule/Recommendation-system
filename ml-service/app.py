@@ -81,7 +81,13 @@ def recommend(game_name, top_n=5):
 
     game_indices = [i[0] for i in sim_scores]
 
-    results = df['name'].iloc[game_indices].tolist()
+    results = []
+
+    for i, score in sim_scores:
+        results.append({
+            "game": df['name'].iloc[i],
+            "score": float(score)
+        })
 
     print("RECOMMENDATIONS:", results)
 
