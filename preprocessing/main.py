@@ -24,7 +24,7 @@ df['tags_text'] = tags_text_df.apply(lambda x: " ".join(x))
 
 df['content'] = (
     df['name'] + " " +
-    df['tags_text'] + " " + df['tags_text'] + " " +
+    df['tags_text'] + " " +
     df['short_description']
 )
 

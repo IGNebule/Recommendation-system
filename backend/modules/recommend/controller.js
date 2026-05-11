@@ -10,7 +10,7 @@ const getRecommend = async (req, res) => {
 
     const recs = await service.getRecommendations(game);
 
-    res.json({ Recommendations: recs });
+    res.json({ recommendations: recs });
   } catch (err) {
     console.error("ML Error: ", err.message);
     return res.status(500).json({ error: err.message });
@@ -60,36 +60,49 @@ const getPersonalized = async (req, res) => {
   if (!user || !user.preferences || user.preferences.length === 0) {
     return res.json({
       preferences: [],
-      Recommendations: [],
+      recommendations: [],
     });
   }
 
   try {
     const scoreMap = {};
-    const weight = user.preferences.length;
+    const countMap = {};
 
-    for (let game of user.preferences) {
-      const recs = await service.getRecommendations(game);
+    for (let prefGame of user.preferences) {
+      const recs = await service.getRecommendations(prefGame);
 
-      recs.forEach((rec, index) => {
+      recs.forEach((rec) => {
         const gameName = rec.game;
         const simScore = rec.score;
 
-        const baseScore = (5 - index) * simScore;
-
-        if (!scoreMap[gameName]) {
-          scoreMap[gameName] = 0;
+        // 🚫 skip already liked games
+        if (user.preferences.includes(gameName)) {
+          return;
         }
 
-        scoreMap[gameName] += baseScore * weight;
+        // initialize
+        if (!scoreMap[gameName]) {
+          scoreMap[gameName] = 0;
+          countMap[gameName] = 0;
+        }
+
+        // accumulate similarity
+        scoreMap[gameName] += simScore;
+        countMap[gameName] += 1;
       });
     }
 
+    const totalPreferences = user.preferences.length;
+
     const ranked = Object.entries(scoreMap)
-      .sort((a, b) => b[1] - a[1])
-      .map(([game, score]) => ({
+      .map(([game, totalScore]) => ({
         game,
-        score: Number(score.toFixed(4)),
+        score: totalScore / totalPreferences,
+      }))
+      .sort((a, b) => b.score - a.score)
+      .map((item) => ({
+        game: item.game,
+        score: Number(item.score.toFixed(4)),
       }));
 
     const logData = ranked.slice(0, 20).map((item) => ({
@@ -120,8 +133,47 @@ const getPersonalized = async (req, res) => {
   }
 };
 
+const removePreference = async (req, res) => {
+  try {
+    const { game } = req.body;
+
+    const email = req.user.email;
+
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(404).json({
+        Error: "User not found",
+      });
+    }
+
+    if (!game) {
+      return res.status(400).json({
+        Error: "Game is required",
+      });
+    }
+
+    // remove selected game
+    user.preferences = user.preferences.filter((g) => g !== game);
+
+    await user.save();
+
+    return res.json({
+      Message: "Preference removed",
+      preferences: user.preferences,
+    });
+  } catch (err) {
+    console.error(err.message);
+
+    return res.status(500).json({
+      Error: "Server error",
+    });
+  }
+};
+
 module.exports = {
   getRecommend,
   savePreference,
   getPersonalized,
+  removePreference,
 };

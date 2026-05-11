@@ -1,72 +1,28 @@
 {
-  "user": "dummy1@example.com",
+  "user": "dummy1@gmail.com",
   "preferences": [
-    "Rust",
-    "PUBG",
-    "Left 4 Dead 2",
-    "Palworld",
-    "House flipper"
+    "Counter-Strike"
   ],
   "recommendations": [
     {
-      "game": "Left 4 Dead",
-      "score": 18.1258
+      "game": "Counter-Strike: Source",
+      "score": 0.462
     },
     {
-      "game": "SURVIVAL",
-      "score": 15.6633
+      "game": "Insurgency",
+      "score": 0.4523
     },
     {
-      "game": "HopeLine",
-      "score": 11.6802
+      "game": "Undoing",
+      "score": 0.43
     },
     {
-      "game": "Killing Floor",
-      "score": 11.6713
+      "game": "Team Fortress Classic",
+      "score": 0.4276
     },
     {
-      "game": "Eco",
-      "score": 10.8736
-    },
-    {
-      "game": "Survival: Last Day",
-      "score": 8.6651
-    },
-    {
-      "game": "Production Line : Car factory simulation",
-      "score": 8.57
-    },
-    {
-      "game": "Zombie Panic! Source",
-      "score": 8.4956
-    },
-    {
-      "game": "SimAirport",
-      "score": 6.2595
-    },
-    {
-      "game": "Miscreated",
-      "score": 5.7059
-    },
-    {
-      "game": "Killing Floor 2",
-      "score": 5.5954
-    },
-    {
-      "game": "Academia : School Simulator",
-      "score": 4.1544
-    },
-    {
-      "game": "The Region",
-      "score": 2.6719
-    },
-    {
-      "game": "Resident Evil Revelations 2 / Biohazard Revelations 2",
-      "score": 2.6356
-    },
-    {
-      "game": "Demolish & Build 2018",
-      "score": 2.0516
+      "game": "Counter-Strike: Global Offensive",
+      "score": 0.4205
     }
   ]
 }
